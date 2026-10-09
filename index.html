@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>叡智の書庫</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#F3F4F8;
+  --surface:#FFFFFF;
+  --fg:#14151C;
+  --muted:#5B5F73;
+  --line:#14151C;
+  --rule:#C9CBD8;
+  --accent:#2B44F0;
+  --accent-fg:#FFFFFF;
+  --accent-soft:#E3E7FF;
+  --tone:#C3C9EE;
+  --danger:#B8283A;
+  --shadow:#14151C;
+  --font-body:"Noto Sans JP","Hiragino Kaku Gothic ProN","Yu Gothic","Meiryo",sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#101119;
+    --surface:#191B27;
+    --fg:#ECEDF4;
+    --muted:#9A9EB5;
+    --line:#B9BDD6;
+    --rule:#3A3E58;
+    --accent:#8D9BFF;
+    --accent-fg:#0E1020;
+    --accent-soft:#252A55;
+    --tone:#2C3050;
+    --danger:#FF8791;
+    --shadow:#2A2E52;
+    color-scheme:dark;
+  }
+}
+
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--bg);color:var(--fg);
+  font-family:var(--font-body);font-size:15px;line-height:1.65;
+  padding-inline:clamp(16px,4vw,32px);padding-block:0 56px;
+}
+.wrap{max-width:1040px;margin-inline:auto}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ヘッダー */
+.masthead{
+  position:relative;isolation:isolate;
+  padding-block:clamp(28px,6vw,52px) 26px;
+  border-bottom:3px solid var(--line);
+  display:grid;gap:12px;
+}
+.masthead::after{
+  content:"";position:absolute;z-index:-1;right:0;top:0;bottom:0;width:min(60%,420px);
+  background-image:radial-gradient(circle,var(--tone) 1.7px,transparent 2px);
+  background-size:11px 11px;
+  -webkit-mask-image:linear-gradient(to left,#000 10%,transparent);
+  mask-image:linear-gradient(to left,#000 10%,transparent);
+  pointer-events:none;
+}
+h1{
+  margin:0;font-weight:700;
+  font-size:clamp(2.2rem,9vw,3.6rem);line-height:1.15;letter-spacing:.06em;text-wrap:balance;
+}
+.mast-actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:6px}
+.stat{font-size:.88rem;color:var(--muted);font-variant-numeric:tabular-nums}
+
+/* ボタン */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:6px;
+  min-height:44px;padding:8px 18px;
+  background:var(--surface);color:var(--fg);
+  border:2px solid var(--line);border-radius:2px;
+  box-shadow:3px 3px 0 var(--shadow);font-weight:700;
+  transition:transform .08s ease,box-shadow .08s ease;
+}
+.btn:hover{transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--shadow)}
+.btn:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--shadow)}
+.btn.primary{background:var(--accent);color:var(--accent-fg)}
+.btn[disabled]{opacity:.55;cursor:not-allowed;transform:none;box-shadow:3px 3px 0 var(--shadow)}
+.linkbtn{background:none;border:0;padding:4px 2px;color:var(--muted);font-size:.85rem;text-decoration:underline;text-underline-offset:3px}
+.linkbtn:hover{color:var(--fg)}
+.linkbtn.danger{color:var(--danger)}
+
+/* お知らせ */
+.banner{
+  margin-top:20px;padding:12px 16px;
+  border:2px solid var(--line);background:var(--accent-soft);border-radius:2px;
+}
+.banner p{margin:0}
+
+/* 追加フォーム */
+.panel{
+  margin-top:26px;padding:clamp(16px,3vw,24px);
+  background:var(--surface);border:2px solid var(--line);border-radius:2px;
+  box-shadow:6px 6px 0 var(--shadow);
+}
+.panel h2{margin:0 0 14px;font-weight:700;font-size:1.2rem;letter-spacing:.04em}
+.row2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px}
+.field{display:grid;gap:6px;margin-bottom:16px;min-width:0}
+.field label{font-weight:700;font-size:.88rem}
+.hint{font-weight:400;color:var(--muted);font-size:.8rem;margin-left:6px}
+input[type="text"],input[type="url"],input[type="search"],textarea,select,.tagbox{
+  width:100%;background:var(--bg);color:var(--fg);
+  border:2px solid var(--line);border-radius:2px;padding:10px 12px;min-width:0;
+}
+textarea{resize:vertical;min-height:64px}
+.tagbox{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:6px 8px}
+.tagbox:focus-within{outline:3px solid var(--accent);outline-offset:2px}
+.tagbox input{flex:1 1 120px;min-width:80px;border:0;background:transparent;padding:6px 4px;outline:none}
+#f-tags{display:contents}
+.presets{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.presets .hint{margin:0 4px 0 0}
+.form-msg{margin:0 0 12px;color:var(--danger);font-weight:700}
+.form-actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* 検索・タグ */
+.finder{display:grid;gap:14px;margin-top:28px}
+.search{position:relative}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.search input{padding:14px 44px 14px 46px;font-size:1.02rem;background:var(--surface);box-shadow:4px 4px 0 var(--shadow)}
+.search .clear{
+  position:absolute;right:8px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;border:0;background:transparent;color:var(--muted);font-size:1.2rem;line-height:1;border-radius:50%;
+}
+.search .clear:hover{color:var(--fg)}
+.cloud{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{
+  display:inline-flex;align-items:center;gap:6px;
+  min-height:30px;padding:2px 12px;
+  background:var(--surface);color:var(--fg);
+  border:1.5px solid var(--line);border-radius:999px;font-size:.84rem;
+}
+.chip:hover{background:var(--accent-soft)}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.chip .n{color:var(--muted);font-size:.76rem;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"] .n{color:inherit;opacity:.85}
+.chip.ghost{border-style:dashed;background:transparent}
+.chip.removable{background:var(--accent-soft)}
+
+/* 一覧ヘッダー */
+.toolbar{
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;
+  margin-top:30px;padding-bottom:10px;border-bottom:2px solid var(--line);
+}
+.toolbar .count{margin:0;font-weight:700;font-variant-numeric:tabular-nums}
+.toolbar .right{display:flex;flex-wrap:wrap;align-items:center;gap:12px}
+.toolbar select{width:auto;padding:6px 10px;background:var(--surface);font-size:.9rem}
+
+/* カード */
+.grid{
+  list-style:none;margin:26px 0 0;padding:0;
+  display:grid;gap:26px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));
+}
+.card{
+  display:flex;flex-direction:column;gap:10px;min-width:0;
+  padding:16px;background:var(--surface);
+  border:2px solid var(--line);border-radius:2px;box-shadow:5px 5px 0 var(--shadow);
+  transition:transform .1s ease,box-shadow .1s ease;
+}
+.card:hover{transform:translate(-1px,-1px);box-shadow:6px 6px 0 var(--shadow)}
+.card h3{margin:0;font-size:1.06rem;line-height:1.45;font-weight:700;overflow-wrap:anywhere}
+.card h3 a{color:var(--fg);text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:2px;text-underline-offset:4px}
+.card h3 a:hover{text-decoration-thickness:4px}
+.domain{margin:0;font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.note{margin:0;color:var(--fg);font-size:.92rem;overflow-wrap:anywhere;white-space:pre-line}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.card .chip{min-height:26px;padding:0 10px;font-size:.78rem}
+.card-foot{
+  margin-top:auto;padding-top:10px;border-top:1.5px dashed var(--rule);
+  display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px 10px;
+  font-size:.82rem;color:var(--muted);
+}
+.card-foot .who{min-width:0;overflow-wrap:anywhere}
+.card-foot .acts{display:flex;align-items:center;gap:10px}
+.like{
+  display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 10px;
+  background:transparent;color:var(--fg);border:1.5px solid var(--line);border-radius:999px;font-size:.84rem;
+  font-variant-numeric:tabular-nums;
+}
+.like[aria-pressed="true"]{background:var(--accent);color:var(--accent-fg)}
+.like[disabled]{opacity:.6;cursor:default}
+
+.empty{
+  margin-top:26px;padding:34px 20px;text-align:center;
+  border:2px dashed var(--line);border-radius:2px;display:grid;gap:12px;justify-items:center;
+}
+.empty h2{margin:0;font-weight:700;font-size:1.15rem;letter-spacing:.04em}
+.empty p{margin:0;color:var(--muted);max-width:30em}
+.more{display:flex;justify-content:center;margin-top:30px}
+
+.toast-wrap{
+  position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;pointer-events:none;
+  padding:16px 16px calc(16px + env(safe-area-inset-bottom,0px));
+}
+.toast{
+  background:var(--fg);color:var(--bg);padding:10px 18px;border-radius:2px;font-weight:700;
+  box-shadow:4px 4px 0 var(--accent);opacity:0;transform:translateY(8px);transition:opacity .15s ease,transform .15s ease;
+}
+.toast.on{opacity:1;transform:none}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="masthead">
+    <h1>叡智の書庫</h1>
+    <div class="mast-actions">
+      <button class="btn primary" id="toggle-add" type="button" aria-expanded="false" aria-controls="add-panel">＋ リンクを追加</button>
+      <span class="stat" id="stat" aria-live="polite">読み込み中</span>
+    </div>
+  </header>
+
+  <div class="banner" id="banner" hidden><p id="banner-text"></p></div>
+
+  <section class="panel" id="add-panel" hidden aria-labelledby="add-h">
+    <h2 id="add-h">リンクを共有する</h2>
+    <form id="add-form" novalidate>
+      <div class="row2">
+        <div class="field">
+          <label for="f-title">サイト名・作品名</label>
+          <input id="f-title" type="text" maxlength="80" autocomplete="off" placeholder="例：無料で読めるWeb漫画サイト">
+        </div>
+        <div class="field">
+          <label for="f-url">URL</label>
+          <input id="f-url" type="url" inputmode="url" autocomplete="off" placeholder="https://">
+        </div>
+      </div>
+      <div class="field">
+        <label for="f-tag">タグ<span class="hint">Enterか「,」で追加（最大8個）</span></label>
+        <div class="tagbox" id="f-tagbox">
+          <span id="f-tags"></span>
+          <input id="f-tag" type="text" list="tag-options" maxlength="20" autocomplete="off" placeholder="タグを入力">
+        </div>
+        <datalist id="tag-options"></datalist>
+        <div class="presets" id="presets"><span class="hint" id="presets-hint">よく使われているタグ</span></div>
+      </div>
+      <div class="field">
+        <label for="f-note">ひとこと（任意）</label>
+        <textarea id="f-note" maxlength="200" rows="2" placeholder="どんなサイト？どこがおすすめ？"></textarea>
+      </div>
+      <div class="field">
+        <label for="f-name">表示名<span class="hint">投稿に表示されます（任意）</span></label>
+        <input id="f-name" type="text" maxlength="20" autocomplete="nickname" placeholder="例：本好き">
+      </div>
+      <p class="form-msg" id="form-msg" role="alert" hidden></p>
+      <div class="form-actions">
+        <button class="btn primary" id="f-submit" type="submit">共有する</button>
+        <button class="btn" id="f-cancel" type="button">閉じる</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="finder" aria-label="検索とタグ">
+    <div class="search">
+      <label class="sr" for="q">リンクを検索</label>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg>
+      <input id="q" type="search" autocomplete="off" placeholder="タイトル・タグ・ひとこと・サイト名で検索">
+      <button class="clear" id="q-clear" type="button" aria-label="検索語を消す" hidden>×</button>
+    </div>
+    <div class="cloud" id="cloud" aria-label="タグで絞り込み"></div>
+  </section>
+
+  <div class="toolbar">
+    <p class="count" id="count" role="status"></p>
+    <div class="right">
+      <button class="linkbtn" id="reset" type="button" hidden>条件をクリア</button>
+      <label class="sr" for="sort">並び順</label>
+      <select id="sort">
+        <option value="new">新着順</option>
+        <option value="like">いいね順</option>
+        <option value="title">タイトル順</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="empty" id="empty" hidden></div>
+  <ul class="grid" id="list"></ul>
+  <div class="more"><button class="btn" id="more" type="button" hidden>さらに表示</button></div>
+</div>
+<div class="toast-wrap"><div class="toast" id="toast" role="status" aria-live="polite"></div></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import { getFirestore, collection, doc, addDoc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+/* ★ Firebase の設定。うまく接続できないときは、Firebaseコンソールの firebaseConfig をここに貼り直してください。 */
+const firebaseConfig = {
+  apiKey: "AIzaSyAVUnb3FAxrvVSlFqKo-vvVx1pDuU-p6RY",
+  authDomain: "gacha-fed8d.firebaseapp.com",
+  projectId: "gacha-fed8d",
+  storageBucket: "gacha-fed8d.firebasestorage.app",
+  messagingSenderId: "204452178150",
+  appId: "1:204452178150:web:01976d6375cd54478f3327"
+};
+
+var LINKS = "eichi_links", LIKES = "eichi_likes", PAGE = 24, MAX_TAGS = 8;
+var PRESETS = ["公式","無料","試し読み","Web漫画","縦読み","少年漫画","少女漫画","青年漫画","電子書籍","同人","海外"];
+
+var S = {
+  fs: null, me: null, links: [], likes: new Map(), loaded: false, error: null,
+  q: "", tags: new Set(), sort: "new", limit: PAGE, allTags: false, formTags: []
+};
+var $ = function(id){ return document.getElementById(id); };
+
+/* ---------- 文字列まわり ---------- */
+function norm(s){
+  return String(s == null ? "" : s).normalize("NFKC").toLowerCase()
+    .replace(/[ァ-ヶ]/g, function(c){ return String.fromCharCode(c.charCodeAt(0) - 0x60); });
+}
+function cleanTag(t){
+  return String(t || "").normalize("NFKC").replace(/^[#＃\s]+/, "").replace(/[\s,、，]+$/, "").trim().slice(0, 20);
+}
+function parseUrl(raw){
+  var s = String(raw || "").trim();
+  if (!s) return null;
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(s)) s = "https://" + s;
+  try {
+    var u = new URL(s);
+    if (u.protocol !== "http:" && u.protocol !== "https:") return null;
+    if (u.hostname.indexOf(".") < 0) return null;
+    return u;
+  } catch (e) { return null; }
+}
+function safeHref(raw){ var u = parseUrl(raw); return u ? u.href : null; }
+function domainOf(raw){ var u = parseUrl(raw); return u ? u.hostname.replace(/^www\./, "") : ""; }
+function urlKey(raw){
+  var u = parseUrl(raw);
+  if (!u) return String(raw || "").toLowerCase();
+  ["utm_source","utm_medium","utm_campaign","utm_term","utm_content","fbclid"].forEach(function(k){ u.searchParams.delete(k); });
+  return (u.hostname.replace(/^www\./, "") + u.pathname.replace(/\/+$/, "") + u.search).toLowerCase();
+}
+function ago(ts){
+  if (typeof ts !== "number") return "";
+  var d = Date.now() - ts, m = Math.floor(d / 60000);
+  if (m < 1) return "たった今";
+  if (m < 60) return m + "分前";
+  var h = Math.floor(m / 60);
+  if (h < 24) return h + "時間前";
+  var dd = Math.floor(h / 24);
+  if (dd < 30) return dd + "日前";
+  var x = new Date(ts);
+  return x.getFullYear() + "/" + (x.getMonth() + 1) + "/" + x.getDate();
+}
+function el(tag, attrs){
+  var e = document.createElement(tag), i, k;
+  if (attrs) for (k in attrs) {
+    var v = attrs[k];
+    if (v == null || v === false) continue;
+    if (k === "class") e.className = v;
+    else if (k === "text") e.textContent = v;
+    else if (k.slice(0, 2) === "on") e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? "" : v);
+  }
+  for (i = 2; i < arguments.length; i++) {
+    var c = arguments[i];
+    if (c == null || c === false) continue;
+    e.append(c.nodeType ? c : document.createTextNode(String(c)));
+  }
+  return e;
+}
+
+var toastTimer = 0;
+function toast(msg){
+  var t = $("toast"); t.textContent = msg; t.classList.add("on");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function(){ t.classList.remove("on"); }, 2600);
+}
+
+/* ---------- データ整形 ---------- */
+function fromDoc(d){
+  var x = d.data() || {};
+  if (typeof x.url !== "string" || typeof x.title !== "string") return null;
+  var tags = Array.isArray(x.tags) ? x.tags.filter(function(t){ return typeof t === "string" && t; }) : [];
+  return {
+    id: d.id, url: x.url, title: x.title, note: typeof x.note === "string" ? x.note : "",
+    tags: tags, by: typeof x.by === "string" ? x.by : null,
+    byName: typeof x.byName === "string" ? x.byName : "", at: typeof x.at === "number" ? x.at : 0
+  };
+}
+function likeCount(id){ var s = S.likes.get(id); return s ? s.size : 0; }
+function liked(id){ var s = S.likes.get(id); return !!(s && S.me && s.has(S.me)); }
+function haystack(l){
+  return norm([l.title, l.note, l.tags.join(" "), domainOf(l.url), l.url].join(" "));
+}
+function filtered(){
+  var words = norm(S.q).split(/\s+/).filter(Boolean);
+  var need = Array.from(S.tags);
+  var out = S.links.filter(function(l){
+    if (need.length) {
+      var keys = l.tags.map(norm);
+      for (var i = 0; i < need.length; i++) if (keys.indexOf(need[i]) < 0) return false;
+    }
+    if (words.length) {
+      var h = haystack(l);
+      for (var j = 0; j < words.length; j++) if (h.indexOf(words[j]) < 0) return false;
+    }
+    return true;
+  });
+  out.sort(function(a, b){
+    if (S.sort === "like") return (likeCount(b.id) - likeCount(a.id)) || (b.at - a.at);
+    if (S.sort === "title") return a.title.localeCompare(b.title, "ja");
+    return b.at - a.at;
+  });
+  return out;
+}
+function tagStats(){
+  var m = new Map();
+  S.links.forEach(function(l){
+    var seen = new Set();
+    l.tags.forEach(function(t){
+      var k = norm(t);
+      if (seen.has(k)) return;
+      seen.add(k);
+      var e = m.get(k);
+      if (e) e.n++; else m.set(k, { key: k, label: t, n: 1 });
+    });
+  });
+  return Array.from(m.values()).sort(function(a, b){ return (b.n - a.n) || a.label.localeCompare(b.label, "ja"); });
+}
+
+/* ---------- エラー表示 ---------- */
+function explain(e){
+  var c = (e && e.code) || "";
+  var msg = "データベースに接続できません。ページを開き直してください。";
+  if (c === "auth/operation-not-allowed" || c === "auth/admin-restricted-operation") msg = "Firebaseの「Authentication」で匿名ログインを有効にしてください。";
+  else if (c === "auth/unauthorized-domain") msg = "Firebaseの「Authentication」→「設定」→「承認済みドメイン」に、このサイトのドメインを追加してください。";
+  else if (c === "auth/invalid-api-key" || c === "auth/api-key-not-valid.-please-pass-a-valid-api-key.") msg = "設定（apiKey）が正しくありません。firebaseConfigを貼り直してください。";
+  else if (c === "permission-denied") msg = "Firestoreのルールで拒否されました。ルールの設定を確認してください。";
+  else if (c === "failed-precondition" || c === "not-found" || c === "unavailable") msg = "Firestoreデータベースが作成されているか、ネットワークがつながっているかを確認してください。";
+  return c ? msg + "（" + c + "）" : msg;
+}
+function errText(e){
+  var c = e && e.code;
+  if (c === "permission-denied") return "この操作をする権限がありません。";
+  if (c === "resource-exhausted") return "利用上限に達しています。しばらく待ってからやり直してください。";
+  return "保存できませんでした。もう一度お試しください。";
+}
+
+/* ---------- 描画 ---------- */
+var queued = false;
+function schedule(){
+  if (queued) return;
+  queued = true;
+  queueMicrotask(function(){ queued = false; render(); });
+}
+
+function renderBanner(){
+  var msg = S.error ? explain(S.error) : "";
+  $("banner").hidden = !msg;
+  $("banner-text").textContent = msg;
+  $("toggle-add").disabled = !!S.error;
+}
+
+function renderTags(){
+  var stats = tagStats(), box = $("cloud");
+  box.replaceChildren();
+  $("tag-options").replaceChildren.apply($("tag-options"), stats.map(function(t){ return el("option", { value: t.label }); }));
+  if (!stats.length) return;
+  var shown = S.allTags ? stats : stats.slice(0, 16);
+  S.tags.forEach(function(k){
+    if (!shown.some(function(t){ return t.key === k; })) {
+      var hit = stats.filter(function(t){ return t.key === k; })[0];
+      if (hit) shown = shown.concat([hit]);
+    }
+  });
+  shown.forEach(function(t){
+    box.append(el("button", {
+      class: "chip", type: "button", "aria-pressed": S.tags.has(t.key) ? "true" : "false",
+      onclick: function(){ toggleTag(t.key); }
+    }, "#" + t.label, el("span", { class: "n", text: String(t.n) })));
+  });
+  if (stats.length > 16) {
+    box.append(el("button", {
+      class: "chip ghost", type: "button",
+      onclick: function(){ S.allTags = !S.allTags; schedule(); }
+    }, S.allTags ? "タグを減らす" : "すべてのタグ（" + stats.length + "）"));
+  }
+}
+
+function card(l){
+  var href = safeHref(l.url);
+  var title = href
+    ? el("a", { href: href, target: "_blank", rel: "noopener noreferrer", text: l.title })
+    : el("span", { text: l.title });
+  var tagRow = el("div", { class: "tags" });
+  l.tags.forEach(function(t){
+    var k = norm(t);
+    tagRow.append(el("button", {
+      class: "chip", type: "button", "aria-pressed": S.tags.has(k) ? "true" : "false",
+      onclick: function(){ toggleTag(k); }
+    }, "#" + t));
+  });
+  var n = likeCount(l.id), mine = liked(l.id);
+  var likeBtn = el("button", {
+    class: "like", type: "button", "aria-pressed": mine ? "true" : "false",
+    "aria-label": "いいね " + n + "件" + (mine ? "（押し済み）" : ""),
+    disabled: !S.me,
+    onclick: function(){ toggleLike(l); }
+  }, mine ? "♥" : "♡", String(n));
+  var acts = el("div", { class: "acts" }, likeBtn);
+  if (l.by && l.by === S.me) acts.append(deleteBtn(l));
+  var who = (l.by && l.by === S.me) ? "あなた" : (l.byName || "だれか");
+  return el("li", { class: "card" },
+    el("h3", null, title),
+    el("p", { class: "domain", text: domainOf(l.url) || l.url }),
+    l.note ? el("p", { class: "note", text: l.note }) : null,
+    l.tags.length ? tagRow : null,
+    el("div", { class: "card-foot" },
+      el("span", { class: "who", text: who + (l.at ? " ・ " + ago(l.at) : "") }),
+      acts));
+}
+
+function deleteBtn(l){
+  var armed = false, timer = 0;
+  var b = el("button", { class: "linkbtn danger", type: "button", text: "削除" });
+  b.addEventListener("click", function(){
+    if (!armed) {
+      armed = true; b.textContent = "本当に削除";
+      timer = setTimeout(function(){ armed = false; b.textContent = "削除"; }, 4000);
+      return;
+    }
+    clearTimeout(timer); b.disabled = true;
+    removeLink(l);
+  });
+  return b;
+}
+
+function renderList(){
+  var items = filtered(), list = $("list"), empty = $("empty");
+  var active = !!(S.q.trim() || S.tags.size);
+  $("count").textContent = !S.loaded ? "" : (active ? items.length + "件が見つかりました" : S.links.length + "件のリンク");
+  $("reset").hidden = !active;
+  $("q-clear").hidden = !S.q;
+
+  list.replaceChildren();
+  empty.hidden = true;
+  if (!S.loaded) {
+    empty.hidden = false;
+    empty.replaceChildren(el("h2", { text: "読み込んでいます" }), el("p", { text: "みんなが共有したリンクを取得しています。" }));
+    $("more").hidden = true;
+    return;
+  }
+  if (!S.links.length) {
+    empty.hidden = false;
+    var kids = [el("h2", { text: "まだリンクがありません" }),
+      el("p", { text: "気に入っている漫画サイトのURLを、タグを付けて最初の1件として共有しましょう。" })];
+    if (!S.error) kids.push(el("button", { class: "btn primary", type: "button", text: "＋ 最初のリンクを追加", onclick: function(){ openForm(true); } }));
+    empty.replaceChildren.apply(empty, kids);
+    $("more").hidden = true;
+    return;
+  }
+  if (!items.length) {
+    empty.hidden = false;
+    empty.replaceChildren(el("h2", { text: "見つかりませんでした" }),
+      el("p", { text: "検索語やタグを変えてみてください。ひらがなとカタカナは区別せずに探します。" }),
+      el("button", { class: "btn", type: "button", text: "条件をクリア", onclick: resetFilters }));
+    $("more").hidden = true;
+    return;
+  }
+  var shown = items.slice(0, S.limit);
+  list.append.apply(list, shown.map(card));
+  $("more").hidden = items.length <= S.limit;
+  $("more").textContent = "さらに表示（残り" + (items.length - S.limit) + "件）";
+}
+
+function render(){
+  $("stat").textContent = S.loaded ? S.links.length + "件・" + tagStats().length + "タグ" : "読み込み中";
+  renderBanner();
+  renderTags();
+  renderFormTags();
+  renderList();
+}
+
+/* ---------- 絞り込み操作 ---------- */
+function toggleTag(k){
+  if (S.tags.has(k)) S.tags.delete(k); else S.tags.add(k);
+  S.limit = PAGE; schedule();
+}
+function resetFilters(){
+  S.q = ""; S.tags.clear(); S.limit = PAGE; $("q").value = ""; schedule();
+}
+$("q").addEventListener("input", function(e){ S.q = e.target.value; S.limit = PAGE; schedule(); });
+$("q-clear").addEventListener("click", function(){ S.q = ""; $("q").value = ""; $("q").focus(); schedule(); });
+$("reset").addEventListener("click", resetFilters);
+$("sort").addEventListener("change", function(e){ S.sort = e.target.value; S.limit = PAGE; schedule(); });
+$("more").addEventListener("click", function(){ S.limit += PAGE; schedule(); });
+
+/* ---------- 書き込み ---------- */
+var pendingLike = new Set();
+function toggleLike(l){
+  if (!S.fs || !S.me) return;
+  var key = l.id + "__" + S.me;
+  if (pendingLike.has(key)) return;
+  pendingLike.add(key);
+  var ref = doc(S.fs, LIKES, key);
+  var p = liked(l.id) ? deleteDoc(ref) : setDoc(ref, { linkId: l.id, by: S.me, at: Date.now() });
+  p.catch(function(e){ toast(errText(e)); }).then(function(){ pendingLike.delete(key); });
+}
+function removeLink(l){
+  deleteDoc(doc(S.fs, LINKS, l.id)).then(function(){
+    toast("削除しました");
+    if (liked(l.id)) return deleteDoc(doc(S.fs, LIKES, l.id + "__" + S.me)).catch(function(){});
+  }).catch(function(e){ toast(errText(e)); schedule(); });
+}
+
+/* ---------- 追加フォーム ---------- */
+function openForm(on){
+  var p = $("add-panel");
+  p.hidden = !on;
+  $("toggle-add").setAttribute("aria-expanded", on ? "true" : "false");
+  if (on) { p.scrollIntoView({ block: "nearest" }); $("f-title").focus(); }
+}
+$("toggle-add").addEventListener("click", function(){ openForm($("add-panel").hidden); });
+$("f-cancel").addEventListener("click", function(){ openForm(false); $("toggle-add").focus(); });
+
+function formMsg(text){
+  var m = $("form-msg"); m.hidden = !text; m.textContent = text || "";
+}
+function renderFormTags(){
+  var box = $("f-tags");
+  box.replaceChildren();
+  S.formTags.forEach(function(t, i){
+    box.append(el("button", {
+      class: "chip removable", type: "button", "aria-label": "タグ「" + t + "」を外す",
+      onclick: function(){ S.formTags.splice(i, 1); renderFormTags(); }
+    }, "#" + t + " ×"));
+  });
+  // よく使われているタグ：使用数が多い順（リアルタイム）。足りない分は定番タグで補う
+  var pr = $("presets"), stats = tagStats().slice(0, 10), have = new Set(stats.map(function(t){ return t.key; }));
+  var items = stats.map(function(t){ return { label: t.label, n: t.n }; });
+  PRESETS.forEach(function(t){
+    if (items.length < 10 && !have.has(norm(t))) items.push({ label: t, n: 0 });
+  });
+  $("presets-hint").textContent = stats.length ? "よく使われているタグ" : "はじめのおすすめタグ";
+  Array.from(pr.querySelectorAll("button")).forEach(function(b){ b.remove(); });
+  items.forEach(function(it){
+    var on = S.formTags.some(function(x){ return norm(x) === norm(it.label); });
+    pr.append(el("button", {
+      class: "chip ghost", type: "button", "aria-pressed": on ? "true" : "false",
+      onclick: function(){
+        if (on) { S.formTags = S.formTags.filter(function(x){ return norm(x) !== norm(it.label); }); renderFormTags(); }
+        else addFormTag(it.label);
+      }
+    }, "#" + it.label, it.n ? el("span", { class: "n", text: String(it.n) }) : null));
+  });
+}
+function addFormTag(raw){
+  var t = cleanTag(raw);
+  if (!t) return true;
+  if (S.formTags.some(function(x){ return norm(x) === norm(t); })) return true;
+  if (S.formTags.length >= MAX_TAGS) { formMsg("タグは" + MAX_TAGS + "個までです。"); return false; }
+  S.formTags.push(t); formMsg(""); renderFormTags(); return true;
+}
+function commitTagInput(){
+  var inp = $("f-tag"), parts = inp.value.split(/[,、，]/), i;
+  for (i = 0; i < parts.length; i++) if (!addFormTag(parts[i])) break;
+  inp.value = "";
+}
+$("f-tag").addEventListener("keydown", function(e){
+  if (e.isComposing) return;
+  if (e.key === "Enter") { e.preventDefault(); commitTagInput(); }
+  else if (e.key === "Backspace" && !e.target.value && S.formTags.length) { S.formTags.pop(); renderFormTags(); }
+});
+$("f-tag").addEventListener("input", function(e){
+  if (/[,、，]/.test(e.target.value)) commitTagInput();
+});
+$("f-tag").addEventListener("blur", commitTagInput);
+
+var submitting = false;
+$("add-form").addEventListener("submit", function(e){
+  e.preventDefault();
+  if (submitting) return;
+  commitTagInput();
+  var title = $("f-title").value.trim(), u = parseUrl($("f-url").value), note = $("f-note").value.trim();
+  var byName = $("f-name").value.trim().slice(0, 20);
+  if (!S.fs) return formMsg("データベースに接続できません。");
+  if (!S.me) return formMsg("接続中です。少し待ってからもう一度押してください。");
+  if (!title) { $("f-title").focus(); return formMsg("サイト名・作品名を入力してください。"); }
+  if (!u) { $("f-url").focus(); return formMsg("URLは https:// から始まる形式で入力してください。"); }
+  var key = urlKey(u.href), dup = S.links.filter(function(l){ return urlKey(l.url) === key; })[0];
+  if (dup) return formMsg("このURLはすでに「" + dup.title + "」として登録されています。");
+  submitting = true; $("f-submit").disabled = true; formMsg("");
+  try { localStorage.setItem("eichi-name", byName); } catch (err) {}
+  addDoc(collection(S.fs, LINKS), {
+    title: title, url: u.href, note: note, tags: S.formTags.slice(),
+    by: S.me, byName: byName, at: Date.now()
+  }).then(function(){
+    $("f-title").value = ""; $("f-url").value = ""; $("f-note").value = "";
+    S.formTags = []; renderFormTags();
+    resetFilters(); S.sort = "new"; $("sort").value = "new";
+    openForm(false); toast("共有しました");
+  }).catch(function(err){
+    formMsg(errText(err));
+  }).then(function(){ submitting = false; $("f-submit").disabled = false; });
+});
+
+/* ---------- 起動 ---------- */
+function fail(err){
+  console.error(err);
+  S.error = err || {}; S.loaded = true; schedule();
+}
+try { $("f-name").value = localStorage.getItem("eichi-name") || ""; } catch (err) {}
+renderFormTags();
+render();
+
+try {
+  var app = initializeApp(firebaseConfig);
+  S.fs = getFirestore(app);
+  var auth = getAuth(app);
+  onAuthStateChanged(auth, function(u){ if (u) { S.me = u.uid; schedule(); } });
+  signInAnonymously(auth).catch(fail);
+
+  onSnapshot(collection(S.fs, LINKS), function(snap){
+    S.links = snap.docs.map(fromDoc).filter(Boolean);
+    S.loaded = true; S.error = null; schedule();
+  }, fail);
+
+  onSnapshot(collection(S.fs, LIKES), function(snap){
+    var m = new Map();
+    snap.docs.forEach(function(d){
+      var x = d.data() || {};
+      if (typeof x.linkId !== "string" || typeof x.by !== "string") return;
+      if (!m.has(x.linkId)) m.set(x.linkId, new Set());
+      m.get(x.linkId).add(x.by);
+    });
+    S.likes = m; schedule();
+  }, fail);
+} catch (err) { fail(err); }
+</script>
+</body>
+</html>
